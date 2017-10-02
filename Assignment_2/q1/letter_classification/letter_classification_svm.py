@@ -161,7 +161,7 @@ def SVM(train_data, train_labels, test_data, test_labels, kernel='linear'):
     return accuracy, precision, recall, f1
 
 
-def normal_classification(X_data, Y_data):
+def normal_classification(X_data, Y_data, svm_kernel):
 
     sss = StratifiedShuffleSplit(n_splits=5, test_size=0.125)   # Do not change this split size
     accumulated_metrics = []
@@ -184,6 +184,7 @@ def normal_classification(X_data, Y_data):
     print "Testing Accuracy: %.4f, Precision: %.4f, Recall: %.4f, F1: %.4f" % (
         final_accuracy, final_precision, final_recall, final_f1)
 
+    return final_accuracy
 
 
 def find_best_contributors(X_data, Y_data):
@@ -217,6 +218,7 @@ def find_best_contributors(X_data, Y_data):
 
     return discriminators[0:2]
 
+
 def classify_on_disciminators(X_data, Y_data, discriminators):
 
     sss = StratifiedShuffleSplit(n_splits=5, test_size=0.125)   # Do not change this split size
@@ -243,13 +245,6 @@ def classify_on_disciminators(X_data, Y_data, discriminators):
         discriminators[0], discriminators[1], final_accuracy, final_precision, final_recall, final_f1)
 
 
-
-
-
-
-
-
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--data_dir', default=None, help='path to the directory containing the dataset file')
@@ -268,11 +263,14 @@ if __name__ == '__main__':
             sys.exit()
 
     # Set the value for svm_kernel as required.
-    svm_kernel = 'linear'
+    svm_kernels = ['linear', 'poly', 'rbf', 'sigmoid']
+    accuracy = []
 
-    X_data, Y_data = get_input_data(filename)
-    print X_data.shape, Y_data.shape
+    for svm_kernel in svm_kernels:
+        X_data, Y_data = get_input_data(filename)
+        print X_data.shape, Y_data.shape
 
-    normal_classification(X_data, Y_data)
-    discriminators = find_best_contributors(X_data, Y_data)
-    classify_on_disciminators(X_data, Y_data, discriminators)
+        accuracy.append(normal_classification(X_data, Y_data, svm_kernel))
+
+        discriminators = find_best_contributors(X_data, Y_data)
+        classify_on_disciminators(X_data, Y_data, discriminators)

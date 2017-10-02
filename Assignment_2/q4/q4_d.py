@@ -41,7 +41,7 @@ def calculate_accuracy(X_test, Y_test, linear_regr_model):
     # print sum(list([1 for x in zip(prediction, Y_test) if x[0] == x[1]]))/float(len(prediction))
     accuracy = 0
     if Y_test.shape[0] != 0:
-        accuracy = sum((list(map(lambda x, y: 1 if x == y else 0, prediction, Y_test))))/float(len(prediction))
+        accuracy = sum((list(map(lambda x, y: 1 if x == y else 0, Y_test, prediction))))/float(len(prediction))
 
     return accuracy, prediction
 

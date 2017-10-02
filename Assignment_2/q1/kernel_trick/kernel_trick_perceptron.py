@@ -153,8 +153,7 @@ def perceptron(X, Y):
     """
     zz = ((-W[0] * xx) + (-W[1] * yy) + (-intercept)) * 1. / W[2]
 
-    ax.plot_surface(xx, yy, zz, rstride=10, cstride=10, color='g', antialiased=False,
-            linewidth=0, shade=False)
+    ax.plot_surface(xx, yy, zz, rstride=10, cstride=10, color='g', antialiased=False, linewidth=0, shade=False)
     plt.show()
 
     return is_linearly_separable
@@ -162,8 +161,7 @@ def perceptron(X, Y):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--data_dir', default=None,
-            help='path to the directory containing the dataset file')
+    parser.add_argument('--data_dir', default=None, help='path to the directory containing the dataset file')
 
     args = parser.parse_args()
     if args.data_dir is None:

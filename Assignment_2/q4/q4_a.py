@@ -3,6 +3,8 @@ from sklearn.model_selection import StratifiedShuffleSplit
 from sklearn.model_selection import train_test_split
 import numpy as np
 from sklearn import linear_model
+import matplotlib.pyplot as plt
+
 
 import argparse, os, sys
 
@@ -41,7 +43,7 @@ def calculate_accuracy(X_test, Y_test, lasso_regr_model):
     # print sum(list([1 for x in zip(prediction, Y_test) if x[0] == x[1]]))/float(len(prediction))
     accuracy = 0
     if Y_test.shape[0] != 0:
-        accuracy = sum((list(map(lambda x, y: 1 if x == y else 0, prediction, Y_test))))/float(len(prediction))
+        accuracy = sum((list(map(lambda x, y: 1 if x == y else 0, Y_test, prediction))))/float(len(prediction))
 
     return accuracy, prediction
 
@@ -64,7 +66,8 @@ if __name__ == '__main__':
 
     lasso_regr_model = []
     alpha_count = 1000.0
-    lasso_regr_model = [lasso_regr(X_train, Y_train, alpha/alpha_count) for alpha in range(1, int(alpha_count))]
+    alpha_values = [i/alpha_count for i in range(1, int(alpha_count)+1)]
+    lasso_regr_model = [lasso_regr(X_train, Y_train, alpha) for alpha in alpha_values]
     out = [calculate_accuracy(X_val, Y_val, regr_model) for regr_model in lasso_regr_model]
 
     accuracy, prediction = zip(*out)
@@ -73,8 +76,13 @@ if __name__ == '__main__':
     max_accuracy_indices = [i for i, x in enumerate(accuracy) if x == max_accuracy]
     max_accuracy_index = max_accuracy_indices[-1]
     best_alpha = (max_accuracy_index + 1) / alpha_count
-
     print max_accuracy, best_alpha
+
+    plt.plot(alpha_values, accuracy)
+    plt.xlim(0, 1.1)
+    plt.ylim(0, 1.1)
+    plt.savefig('a.jpg')
+    # plt.show()
 
     lasso_regr_model = lasso_regr(X_train, Y_train, best_alpha)
     final_accuracy, final_predictions = calculate_accuracy(X_test, Y_test, lasso_regr_model)
